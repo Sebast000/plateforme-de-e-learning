@@ -1,0 +1,1320 @@
+openapi: 3.0.3
+info:
+  title: Elearning API
+  version: v1
+  description: Documentation de l'API pour l'application d'apprentissage personnalisé.
+paths:
+  /api/categories/:
+    get:
+      operationId: categories_list
+      parameters:
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      tags:
+      - categories
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedCategoryList'
+          description: ''
+    post:
+      operationId: categories_create
+      tags:
+      - categories
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Category'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Category'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Category'
+        required: true
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Category'
+          description: ''
+  /api/certificates/{certificate_id}/download/:
+    get:
+      operationId: certificates_download_retrieve
+      description: Télécharge le certificat de l'utilisateur en tant que fichier PDF.
+      parameters:
+      - in: path
+        name: certificate_id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - certificates
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: string
+                format: binary
+          description: ''
+        '404':
+          content:
+            application/json:
+              schema:
+                description: Certificat introuvable.
+          description: ''
+        '401':
+          content:
+            application/json:
+              schema:
+                description: Non authentifié (JWT manquant ou invalide).
+          description: ''
+  /api/courses/:
+    get:
+      operationId: courses_list
+      parameters:
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      tags:
+      - courses
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedCourseList'
+          description: ''
+    post:
+      operationId: courses_create
+      tags:
+      - courses
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Course'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Course'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Course'
+        required: true
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Course'
+          description: ''
+  /api/courses/{id}/:
+    get:
+      operationId: courses_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - courses
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Course'
+          description: ''
+    put:
+      operationId: courses_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - courses
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Course'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Course'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Course'
+        required: true
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Course'
+          description: ''
+    patch:
+      operationId: courses_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - courses
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedCourse'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedCourse'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedCourse'
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Course'
+          description: ''
+    delete:
+      operationId: courses_destroy
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - courses
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '204':
+          description: No response body
+  /api/forum/messages/{message_id}/reply/:
+    post:
+      operationId: forum_messages_reply_create
+      description: Crée une réponse à un message existant du forum.
+      parameters:
+      - in: path
+        name: message_id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - forum
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ForumReplyCreate'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ForumReplyCreate'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ForumReplyCreate'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForumReply'
+          description: ''
+  /api/forum/topics/:
+    get:
+      operationId: forum_topics_list
+      description: Liste tous les sujets du forum, triés par date de création récente.
+      tags:
+      - forum
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ForumTopic'
+          description: ''
+    post:
+      operationId: forum_topics_create
+      description: Crée un nouveau sujet de forum.
+      tags:
+      - forum
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ForumTopicCreate'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ForumTopicCreate'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ForumTopicCreate'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForumTopic'
+          description: ''
+  /api/forum/topics/{topic_id}/message/:
+    post:
+      operationId: forum_topics_message_create
+      description: Crée un message (ou premier message) dans un sujet spécifique.
+      parameters:
+      - in: path
+        name: topic_id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - forum
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ForumMessageCreate'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ForumMessageCreate'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ForumMessageCreate'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForumMessage'
+          description: ''
+  /api/initial-test/questions/:
+    get:
+      operationId: initial_test_questions_list
+      summary: Obtenir toutes les questions pour le test de positionnement initial.
+      tags:
+      - initial-test
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/InitialTestQuestion'
+          description: ''
+  /api/initial-test/submit/:
+    post:
+      operationId: initial_test_submit_create
+      summary: Soumettre les réponses du test initial.
+      tags:
+      - initial-test
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SubmissionInput'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/SubmissionInput'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/SubmissionInput'
+        required: true
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InitialTestSubmitResponse'
+          description: ''
+  /api/lessons/:
+    get:
+      operationId: lessons_list
+      parameters:
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      tags:
+      - lessons
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedLessonList'
+          description: ''
+    post:
+      operationId: lessons_create
+      tags:
+      - lessons
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Lesson'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Lesson'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Lesson'
+        required: true
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Lesson'
+          description: ''
+  /api/login/:
+    post:
+      operationId: login_create
+      description: |-
+        Takes a set of user credentials and returns an access and refresh JSON web
+        token pair to prove the authentication of those credentials.
+      tags:
+      - login
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TokenObtainPair'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/TokenObtainPair'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/TokenObtainPair'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TokenObtainPair'
+          description: ''
+  /api/modules/:
+    get:
+      operationId: modules_list
+      parameters:
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      tags:
+      - modules
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedModuleList'
+          description: ''
+    post:
+      operationId: modules_create
+      tags:
+      - modules
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Module'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Module'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Module'
+        required: true
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Module'
+          description: ''
+  /api/progress/track/{lesson_id}/:
+    post:
+      operationId: progress_track_create
+      description: |-
+        Permet à l'utilisateur de marquer une leçon spécifique comme complétée.
+        URL: POST /api/progress/track/<int:lesson_id>/
+      summary: Marquer une leçon comme complétée.
+      parameters:
+      - in: path
+        name: lesson_id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - progress
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProgressSuccess'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProgressFailure'
+          description: ''
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProgressFailure'
+          description: ''
+  /api/quiz/{quiz_id}/:
+    get:
+      operationId: quiz_retrieve
+      summary: Obtenir les questions et détails d'un quiz.
+      parameters:
+      - in: path
+        name: quiz_id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - quiz
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Quiz'
+          description: ''
+  /api/quiz/{quiz_id}/submit/:
+    post:
+      operationId: quiz_submit_create
+      summary: Soumettre les réponses d'un quiz.
+      parameters:
+      - in: path
+        name: quiz_id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - quiz
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SubmissionInput'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/SubmissionInput'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/SubmissionInput'
+        required: true
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/QuizSubmitResponse'
+          description: ''
+  /api/recommendations/:
+    get:
+      operationId: recommendations_retrieve
+      summary: Obtenir les recommandations de cours personnalisées pour l'utilisateur.
+      tags:
+      - recommendations
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RecommendationResponse'
+          description: ''
+  /api/register/:
+    post:
+      operationId: register_create
+      description: Enregistrement d'un nouvel utilisateur.
+      tags:
+      - register
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserCreate'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/UserCreate'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/UserCreate'
+        required: true
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+          description: ''
+  /api/token/refresh/:
+    post:
+      operationId: token_refresh_create
+      description: |-
+        Takes a refresh type JSON web token and returns an access type JSON web
+        token if the refresh token is valid.
+      tags:
+      - token
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TokenRefresh'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/TokenRefresh'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/TokenRefresh'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TokenRefresh'
+          description: ''
+components:
+  schemas:
+    Category:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        courses:
+          type: array
+          items:
+            $ref: '#/components/schemas/Course'
+          readOnly: true
+        name:
+          type: string
+          maxLength: 150
+        description:
+          type: string
+      required:
+      - courses
+      - id
+      - name
+    Course:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        modules:
+          type: array
+          items:
+            $ref: '#/components/schemas/Module'
+          readOnly: true
+        title:
+          type: string
+          maxLength: 255
+        description:
+          type: string
+        level:
+          $ref: '#/components/schemas/LevelEnum'
+        thumbnail:
+          type: string
+          format: uri
+          nullable: true
+          maxLength: 200
+        category:
+          type: integer
+        created_by:
+          type: integer
+      required:
+      - category
+      - created_by
+      - description
+      - id
+      - level
+      - modules
+      - title
+    ForumMessage:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        replies:
+          type: array
+          items:
+            $ref: '#/components/schemas/ForumReply'
+          readOnly: true
+        content:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        topic:
+          type: integer
+        user:
+          type: integer
+          readOnly: true
+      required:
+      - content
+      - created_at
+      - id
+      - replies
+      - topic
+      - user
+    ForumMessageCreate:
+      type: object
+      description: Serializer minimal pour la création d'un message (contenu uniquement).
+      properties:
+        content:
+          type: string
+      required:
+      - content
+    ForumReply:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        content:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        message:
+          type: integer
+        user:
+          type: integer
+          readOnly: true
+      required:
+      - content
+      - created_at
+      - id
+      - message
+      - user
+    ForumReplyCreate:
+      type: object
+      description: Serializer minimal pour la création d'une réponse (contenu uniquement).
+      properties:
+        content:
+          type: string
+      required:
+      - content
+    ForumTopic:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        messages:
+          type: array
+          items:
+            $ref: '#/components/schemas/ForumMessage'
+          readOnly: true
+        title:
+          type: string
+          maxLength: 255
+        description:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        created_by:
+          type: integer
+          readOnly: true
+      required:
+      - created_at
+      - created_by
+      - description
+      - id
+      - messages
+      - title
+    ForumTopicCreate:
+      type: object
+      description: |-
+        Serializer minimal utilisé pour valider les données de la requête POST /api/forum/topics/.
+        Il inclut uniquement les champs modifiables par l'utilisateur.
+      properties:
+        title:
+          type: string
+          maxLength: 255
+        description:
+          type: string
+      required:
+      - description
+      - title
+    InitialTestChoice:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        text:
+          type: string
+          maxLength: 300
+        is_correct:
+          type: boolean
+        question:
+          type: integer
+      required:
+      - id
+      - question
+      - text
+    InitialTestQuestion:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        choices:
+          type: array
+          items:
+            $ref: '#/components/schemas/InitialTestChoice'
+        question:
+          type: string
+          maxLength: 500
+      required:
+      - choices
+      - id
+      - question
+    InitialTestSubmitResponse:
+      type: object
+      description: Documente la réponse de la soumission du test initial.
+      properties:
+        score:
+          type: integer
+          readOnly: true
+          description: Score total obtenu (0-100).
+        assigned_level:
+          type: string
+          readOnly: true
+          description: Niveau assigné (Débutant, Intermédiaire, Avancé).
+      required:
+      - assigned_level
+      - score
+    Lesson:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        title:
+          type: string
+          maxLength: 255
+        content:
+          type: string
+        video_url:
+          type: string
+          format: uri
+          nullable: true
+          maxLength: 200
+        order:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+        module:
+          type: integer
+      required:
+      - id
+      - module
+      - title
+    LevelEnum:
+      enum:
+      - Débutant
+      - Intermédiaire
+      - Avancé
+      type: string
+      description: |-
+        * `Débutant` - Débutant
+        * `Intermédiaire` - Intermédiaire
+        * `Avancé` - Avancé
+    Module:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        lessons:
+          type: array
+          items:
+            $ref: '#/components/schemas/Lesson'
+          readOnly: true
+        title:
+          type: string
+          maxLength: 255
+        order:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+        course:
+          type: integer
+      required:
+      - course
+      - id
+      - lessons
+      - title
+    PaginatedCategoryList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Category'
+    PaginatedCourseList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Course'
+    PaginatedLessonList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Lesson'
+    PaginatedModuleList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Module'
+    PatchedCourse:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        modules:
+          type: array
+          items:
+            $ref: '#/components/schemas/Module'
+          readOnly: true
+        title:
+          type: string
+          maxLength: 255
+        description:
+          type: string
+        level:
+          $ref: '#/components/schemas/LevelEnum'
+        thumbnail:
+          type: string
+          format: uri
+          nullable: true
+          maxLength: 200
+        category:
+          type: integer
+        created_by:
+          type: integer
+    ProgressFailure:
+      type: object
+      description: Réponse en cas d'erreur (403 ou 404).
+      properties:
+        detail:
+          type: string
+          readOnly: true
+          description: 'Message d''erreur (ex: non inscrit, leçon non trouvée).'
+      required:
+      - detail
+    ProgressSuccess:
+      type: object
+      description: Réponse en cas de succès du suivi de progression.
+      properties:
+        detail:
+          type: string
+          readOnly: true
+          description: Message de confirmation.
+        progress_percent:
+          type: number
+          format: double
+          readOnly: true
+          description: Pourcentage de complétion du cours mis à jour.
+      required:
+      - detail
+      - progress_percent
+    Quiz:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        questions:
+          type: array
+          items:
+            $ref: '#/components/schemas/QuizQuestion'
+        title:
+          type: string
+          maxLength: 255
+        module:
+          type: integer
+      required:
+      - id
+      - module
+      - questions
+      - title
+    QuizChoice:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        text:
+          type: string
+          maxLength: 300
+        is_correct:
+          type: boolean
+        question:
+          type: integer
+      required:
+      - id
+      - question
+      - text
+    QuizQuestion:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        choices:
+          type: array
+          items:
+            $ref: '#/components/schemas/QuizChoice'
+        question:
+          type: string
+          maxLength: 500
+        quiz:
+          type: integer
+      required:
+      - choices
+      - id
+      - question
+      - quiz
+    QuizSubmitResponse:
+      type: object
+      description: Documente la réponse de la soumission d'un quiz.
+      properties:
+        score:
+          type: integer
+          readOnly: true
+          description: Score du quiz (0-100).
+        passed:
+          type: boolean
+          readOnly: true
+          description: Indique si l'utilisateur a réussi le quiz (score >= 60).
+      required:
+      - passed
+      - score
+    RecommendationItem:
+      type: object
+      description: Pour la liste interne des recommandations
+      properties:
+        score:
+          type: number
+          format: double
+          readOnly: true
+          description: Score de pertinence.
+        course:
+          allOf:
+          - $ref: '#/components/schemas/Course'
+          readOnly: true
+      required:
+      - course
+      - score
+    RecommendationResponse:
+      type: object
+      description: Schéma complet de la réponse pour l'endpoint de recommandations.
+      properties:
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/RecommendationItem'
+      required:
+      - results
+    SubmissionInput:
+      type: object
+      description: |-
+        Serializer pour documenter le corps de la requête de soumission qui attend
+        un dictionnaire avec une clé 'answers' contenant une liste d'IDs (entiers).
+      properties:
+        answers:
+          type: array
+          items:
+            type: integer
+            minimum: 1
+            description: ID du choix de réponse sélectionné.
+          description: Liste des identifiants (IDs) des choix de réponse de l'utilisateur.
+          minItems: 1
+      required:
+      - answers
+    TokenObtainPair:
+      type: object
+      properties:
+        username:
+          type: string
+          writeOnly: true
+        password:
+          type: string
+          writeOnly: true
+        access:
+          type: string
+          readOnly: true
+        refresh:
+          type: string
+          readOnly: true
+      required:
+      - access
+      - password
+      - refresh
+      - username
+    TokenRefresh:
+      type: object
+      properties:
+        access:
+          type: string
+          readOnly: true
+        refresh:
+          type: string
+          writeOnly: true
+      required:
+      - access
+      - refresh
+    User:
+      type: object
+      description: Serializer pour la lecture ou la mise à jour (inclut l'ID et tous
+        les champs).
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        username:
+          type: string
+          description: Required. 150 characters or fewer. Letters, digits and @/./+/-/_
+            only.
+          pattern: ^[\w.@+-]+$
+          maxLength: 150
+        email:
+          type: string
+          format: email
+          title: Email address
+          maxLength: 254
+        password:
+          type: string
+          writeOnly: true
+          maxLength: 128
+        bio:
+          type: string
+          nullable: true
+        level:
+          type: string
+          readOnly: true
+        interests:
+          type: array
+          items:
+            type: string
+            maxLength: 50
+      required:
+      - id
+      - interests
+      - level
+      - username
+    UserCreate:
+      type: object
+      description: Serializer minimal utilisé pour la création d'un utilisateur (enregistrement).
+      properties:
+        username:
+          type: string
+          description: Required. 150 characters or fewer. Letters, digits and @/./+/-/_
+            only.
+          pattern: ^[\w.@+-]+$
+          maxLength: 150
+        email:
+          type: string
+          format: email
+          title: Email address
+          maxLength: 254
+        password:
+          type: string
+          writeOnly: true
+          maxLength: 128
+        bio:
+          type: string
+          nullable: true
+        interests:
+          type: array
+          items:
+            type: string
+            maxLength: 50
+      required:
+      - password
+      - username
+  securitySchemes:
+    jwtAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
